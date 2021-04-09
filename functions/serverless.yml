@@ -1,0 +1,35 @@
+service: frictionless
+frameworkVersion: '2'
+
+custom:
+  env-stage: ${file(env.yml):${self:provider.stage}}
+  env-default: ${file(env.yml):default}
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  stage: ${opt:stage, 'dev'}
+  lambdaHashingVersion: 20201221
+  memorySize: 128
+  region: ${self:custom.env-default.REGION, self:custom.env-stage.REGION}
+  httpApi:
+    cors: true
+  environment:
+    STAGE: ${self:provider.stage}
+    PLAID_CLIENT_ID: ${self:custom.env-default.PLAID_CLIENT_ID, self:custom.env-stage.PLAID_CLIENT_ID}
+    PLAID_API_HOST: ${self:custom.env-default.PLAID_API_HOST, self:custom.env-stage.PLAID_API_HOST}
+    PLAID_SECRET: ${self:custom.env-default.PLAID_SECRET, self:custom.env-stage.PLAID_SECRET}
+
+functions:
+  linkToken:
+    handler: linkToken.handler
+    events:
+    - httpApi:
+        path: /linkToken
+        method: post
+  decide:
+    handler: decide.handler
+    events:
+    - httpApi:
+        path: /decide
+        method: post

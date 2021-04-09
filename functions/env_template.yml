@@ -1,0 +1,17 @@
+default:
+  # AWS region you want to deploy to
+  REGION: eu-west-2
+  # Plaid client id from https://dashboard.plaid.com/team/keys
+  PLAID_CLIENT_ID: aaaaaaaaaaaaaaaaaaaaaaaa
+
+dev:
+  # Plaid secret from https://dashboard.plaid.com/team/keys
+  PLAID_SECRET: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+  # Plaid API host from https://plaid.com/docs/api/#api-host
+  PLAID_API_HOST: https://sandbox.plaid.com
+
+prod:
+  # Plaid secret from https://dashboard.plaid.com/team/keys
+  PLAID_SECRET: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+  # Plaid API host from https://plaid.com/docs/api/#api-host
+  PLAID_API_HOST: https://development.plaid.com
