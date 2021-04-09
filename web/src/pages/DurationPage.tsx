@@ -4,10 +4,12 @@ import Button from '../components/Button';
 import axios from 'axios';
 import { streamId } from '../analytics';
 import config from '../config';
+import { useHistory } from 'react-router';
 
 function DurationPage() {
   const [months, setMonths] = useState(60);
-  const [linkToken, setLinkToken] = useState<string>('');
+  const [linkToken, setLinkToken] = useState('');
+  const [loading, setLoading] = useState(false);
   // Reference that the onSuccess callback can use. Standard React state is
   // immutable, and months would be otherwise be captured by the onSuccess
   // function closure.
@@ -20,16 +22,24 @@ function DurationPage() {
     }
   }, [linkToken]);
 
+  const history = useHistory();
+
   const { open, ready } = usePlaidLink({
     token: linkToken,
     onSuccess: async (publicToken: string) => {
+      setLoading(true);
       axios.post(`${config.api.url}/decide`, { publicToken, months: monthsRef.current })
-        .then(res => window.location.href = `/result#monthlyCost=${res.data.monthlyCost}&finalPurchaseCost=${res.data.finalPurchaseCost}&finalExchangeValue=${res.data.finalExchangeValue}&months=${monthsRef.current}`)
+        .then(res => {
+          history.push('/result');
+          window.location.hash = `#monthlyCost=${res.data.monthlyCost}&finalPurchaseCost=${res.data.finalPurchaseCost}&finalExchangeValue=${res.data.finalExchangeValue}&months=${monthsRef.current}`
+        })
     },
     onExit: (err: any) => {
       if (err) window.location.href = '/notimplemented'
     }
   });
+
+  if (loading) return  <div className="page"><h1>Loading...</h1></div>;
 
   return (
     <div className="page one-button-bottom">

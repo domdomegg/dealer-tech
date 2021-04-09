@@ -11,7 +11,7 @@ provider:
   stage: ${opt:stage, 'dev'}
   lambdaHashingVersion: 20201221
   memorySize: 128
-  region: ${self:custom.env-default.REGION, self:custom.env-stage.REGION}
+  region: ${self:custom.env-default.REGION, self:custom.env-stage.REGION, 'eu-west-1'}
   httpApi:
     cors: true
   environment:
@@ -19,6 +19,15 @@ provider:
     PLAID_CLIENT_ID: ${self:custom.env-default.PLAID_CLIENT_ID, self:custom.env-stage.PLAID_CLIENT_ID}
     PLAID_API_HOST: ${self:custom.env-default.PLAID_API_HOST, self:custom.env-stage.PLAID_API_HOST}
     PLAID_SECRET: ${self:custom.env-default.PLAID_SECRET, self:custom.env-stage.PLAID_SECRET}
+
+package:
+  excludeDevDependencies: false
+  patterns:
+    - '!**'
+    - 'node_modules/**'
+    - 'decide.js'
+    - 'linkToken.js'
+    - 'util.js'
 
 functions:
   linkToken:
@@ -33,3 +42,72 @@ functions:
     - httpApi:
         path: /decide
         method: post
+
+resources:
+  Resources:
+    WebBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: frictionless-${self:provider.stage}
+        AccessControl: PublicRead
+        WebsiteConfiguration:
+          IndexDocument: index.html
+          ErrorDocument: index.html
+      DeletionPolicy: Retain
+    BucketPolicy:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        Bucket: !Ref WebBucket
+        PolicyDocument:
+          Statement:
+            - Action:
+                - "s3:GetObject"
+              Effect: Allow
+              Principal:
+                AWS: !Sub "arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${CDNOriginIdentity}"
+              Resource: !Sub "arn:aws:s3:::${WebBucket}/*"
+          Version: "2012-10-17"
+    CDNOriginIdentity:
+      Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
+      Properties:
+        CloudFrontOriginAccessIdentityConfig:
+          Comment: frictionless-${self:provider.stage}
+    CDN: # mainly for SSL, but hey being behind a CDN is good too
+      Type: AWS::CloudFront::Distribution
+      Properties:
+        DistributionConfig:
+          DefaultCacheBehavior:
+            AllowedMethods:
+              - GET
+              - HEAD
+            CachedMethods:
+              - GET
+              - HEAD
+            CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6 # Managed-CachingOptimized
+            TargetOriginId: !Sub "S3-origin-${WebBucket}"
+            ViewerProtocolPolicy: redirect-to-https
+          DefaultRootObject: index.html
+          Enabled: true
+          HttpVersion: http2
+          IPV6Enabled: true
+          Origins:
+            - DomainName: !GetAtt WebBucket.RegionalDomainName
+              Id: !Sub "S3-origin-${WebBucket}"
+              S3OriginConfig:
+                OriginAccessIdentity: !Sub "origin-access-identity/cloudfront/${CDNOriginIdentity}"
+          CustomErrorResponses:
+            - ErrorCode: 404
+              ResponseCode: 200
+              ResponsePagePath: /index.html
+          PriceClass: PriceClass_100
+          ViewerCertificate:
+            CloudFrontDefaultCertificate: true
+  Outputs:
+    WebsiteURL:
+      Value: !Join 
+        - ''
+        - - 'https://'
+          - !GetAtt 
+            - CDN
+            - DomainName
+      Description: URL for website

@@ -4,7 +4,7 @@ const dev = {
         url: 'https://fghxabnlad.execute-api.eu-west-1.amazonaws.com'
     },
     api: {
-        url: 'https://d8epluldhg.execute-api.eu-west-1.amazonaws.com'
+        url: 'https://a0zqb6su88.execute-api.eu-west-1.amazonaws.com'
     },
 };
 
@@ -14,7 +14,7 @@ const prod = {
         url: 'https://5lpondcp9g.execute-api.eu-west-1.amazonaws.com'
     },
     api: {
-        url: 'https://ph7huv06r2.execute-api.eu-west-1.amazonaws.com'
+        url: 'https://hvp7pe34b6.execute-api.eu-west-1.amazonaws.com'
     },
 };
 

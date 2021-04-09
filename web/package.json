@@ -23,7 +23,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "deploy:dev": "REACT_APP_STAGE=dev npm run build && aws s3 sync --delete build s3://frictionless-dev",
+    "deploy:prod": "REACT_APP_STAGE=prod npm run build && aws s3 sync --delete build s3://frictionless-prod"
   },
   "eslintConfig": {
     "extends": [

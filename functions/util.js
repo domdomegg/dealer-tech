@@ -11,10 +11,11 @@ const makeHandler = (handler) => async (event) => {
   try {
     return await handler(JSON.parse(event.body))
   } catch (err) {
-    if (err.isAxiosError && err.response.status == 400) {
+    if (err.isAxiosError && err.response && err.response.status == 400) {
       console.log(err.response.data)
       return makeRes(400, 'Bad request, see logs for details');
     }
+    console.log(err);
     return makeRes(500, 'An internal error occurred');
   }
 }

@@ -8,7 +8,7 @@ from sklearn.tree import DecisionTreeClassifier, plot_tree, _tree
 # Set up the data
 data = np.genfromtxt('data.tsv', delimiter="\t", skip_header=1)
 feature_names = ['minIncome', 'maxIncome', 'minExpenses', 'maxExpenses', 'averageIncome', 'averageExpenses', 'averageNet']
-class_names = ['low', 'med', 'high', 'rejected']
+class_names = ['low', 'med', 'high', 'vhigh']
 
 # Train the AI
 clf = DecisionTreeClassifier(max_depth=6).fit(data[:,:-1], data[:,-1])
