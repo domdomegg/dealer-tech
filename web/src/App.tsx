@@ -1,8 +1,8 @@
 import {
-  BrowserRouter as Router,
   Switch,
-  Route
-} from "react-router-dom";
+  Route,
+  useHistory
+} from 'react-router-dom';
 import FinancingOptionsPage from './pages/FinancingOptionsPage';
 import AboutPage from './pages/AboutPage';
 import DurationPage from './pages/DurationPage';
@@ -10,10 +10,14 @@ import ResultPage from './pages/ResultPage';
 import CompletePage from './pages/CompletePage';
 import NotImplementedPage from './pages/NotImplementedPage';
 import NotFoundPage from './pages/NotFoundPage';
+import { useEffect } from "react";
+import a from "./analytics";
 
 function App() {
+  const history = useHistory()
+  useEffect(() => history.listen(({ pathname }) => a({ name: 'navigate', pathname })));
+
   return (
-    <Router>
       <Switch>
         <Route path="/" component={FinancingOptionsPage} exact />
         <Route path="/about" component={AboutPage} />
@@ -23,7 +27,6 @@ function App() {
         <Route path="/notimplemented" component={NotImplementedPage} />
         <Route component={NotFoundPage} />
       </Switch>
-    </Router>
   );
 }
 
