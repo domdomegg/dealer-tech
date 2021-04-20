@@ -8,7 +8,7 @@ function NotImplementedPage() {
     <div className="page">
       <h1>Not implemented</h1>
       <p>This page has not been implemented as part of the demo. If it's any consolation, you've found this cat:</p>
-      <img src='https://cataas.com/cat' alt='Cat' />
+      <img src={`https://cataas.com/cat?forceRefresh=${Date.now()}`} alt='Cat' />
       <Button onClick={() => history.goBack()}>Go back</Button>
     </div>
   );

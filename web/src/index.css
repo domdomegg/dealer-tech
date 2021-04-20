@@ -1,9 +1,41 @@
+html {
+  min-height: 100%;
+  display: flex;
+}
+
 body {
+  flex: 1;
   margin: 0;
   font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
-  font-weight: '300';
+  font-weight: 300;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.page {
+  margin: 5vw;
+  flex: 1;
+  position: relative;
+}
+
+.page.one-button-bottom {
+  padding-bottom: 40px;
+}
+
+.page.two-button-bottom {
+  padding-bottom: 90px;
+}
+
+.page-bottom {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
 }
 
 p {
@@ -23,28 +55,6 @@ img {
   margin-right: 3px;
 }
 
-.page {
-  margin: 5vw;
-  min-height: calc(100vh - 10.5vw);
-  position: relative;
-}
-
-.page.one-button-bottom {
-  padding-bottom: 40px;
-  min-height: calc(100vh - 10.5vw - 40px);
-}
-
-.page.two-button-bottom {
-  padding-bottom: 90px;
-  min-height: calc(100vh - 10.5vw - 90px);
-}
-
-.page-bottom {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-}
-
 .card {
   box-shadow: 0 4px 24px rgba(0,0,0,.1), 0 0 4px rgba(0,0,0,.08);
   border-radius: 12px;
@@ -52,11 +62,11 @@ img {
   margin-bottom: 20px;
 }
 
-.card :first-child {
+.page > :first-child, .card > :first-child {
   margin-top: 0;
 }
 
-.card :last-child {
+.page > :last-child, .card > :last-child {
   margin-bottom: 0;
 }
 
