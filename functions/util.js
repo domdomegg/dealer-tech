@@ -1,6 +1,6 @@
 /**
  * Wraps a handling function that may thow, providing a parsed JSON request body
- * @param {(body: any) => { statusCode: number, body: string }} handler 
+ * @param {(body: any) => Promise<{ statusCode: number, body: string }>} handler 
  * @returns AWS-Lambda compatible handler
  */
 const makeHandler = (handler) => async (event) => {
@@ -11,7 +11,11 @@ const makeHandler = (handler) => async (event) => {
   try {
     return await handler(JSON.parse(event.body))
   } catch (err) {
-    if (err.isAxiosError && err.response && err.response.status == 400) {
+    if (err.isAxiosError && err.response && err.response.status === 400) {
+      if (err.response.data && err.response.data.error_code && err.response.data.error_code === "PRODUCT_NOT_READY") {
+        return makeRes(400, err.response.data.error_code);
+      }
+
       console.log(err.response.data)
       return makeRes(400, 'Bad request, see logs for details');
     }

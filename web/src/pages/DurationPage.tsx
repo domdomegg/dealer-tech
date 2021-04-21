@@ -6,6 +6,14 @@ import { streamId } from '../analytics';
 import config from '../config';
 import { useHistory } from 'react-router';
 
+const retry = async function<T>(promise: Promise<T>, attempts: number, delayMs: number = 1000): Promise<T> {
+  if (attempts === 1) {
+    return promise;
+  }
+
+  return promise.catch((err) => new Promise((resolve) => setTimeout(resolve, delayMs)).then(() => retry(promise, attempts - 1, delayMs * 2)));
+}
+
 function DurationPage() {
   const [months, setMonths] = useState(60);
   const [linkToken, setLinkToken] = useState('');
@@ -28,7 +36,7 @@ function DurationPage() {
     token: linkToken,
     onSuccess: async (publicToken: string) => {
       setLoading(true);
-      axios.post(`${config.api.url}/decide`, { publicToken, months: monthsRef.current })
+      retry(axios.post(`${config.api.url}/decide`, { publicToken, months: monthsRef.current }), 5)
         .then(res => {
           history.push('/result');
           window.location.hash = `#monthlyCost=${res.data.monthlyCost}&finalPurchaseCost=${res.data.finalPurchaseCost}&finalExchangeValue=${res.data.finalExchangeValue}&months=${monthsRef.current}`

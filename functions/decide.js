@@ -13,7 +13,6 @@ module.exports.handler = makeHandler(async (body) => {
     public_token: body.publicToken,
   })).data.access_token;
 
-  // TODO: machine learning on transaction data
   const transactions = (await axios.post(`${process.env.PLAID_API_HOST}/transactions/get`, {
     client_id: process.env.PLAID_CLIENT_ID,
     secret: process.env.PLAID_SECRET,
