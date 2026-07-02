@@ -20,7 +20,6 @@ provider:
     PLAID_SECRET: ${self:custom.env-default.PLAID_SECRET, self:custom.env-stage.PLAID_SECRET}
 
 package:
-  excludeDevDependencies: false
   patterns:
     - '!**'
     - 'node_modules/**'

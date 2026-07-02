@@ -39,8 +39,6 @@ jobs:
     defaults:
       run:
         working-directory: functions
-    env:
-      ENVYML: ${{ secrets.ENVYML }}
     steps:
       - name: Checkout ${{ github.sha }}
         uses: actions/checkout@v4
@@ -57,5 +55,7 @@ jobs:
         run: npm ci
       - name: Create env.yml
         run: echo "$ENVYML" > env.yml
+        env:
+          ENVYML: ${{ secrets.ENVYML }}
       - name: Deploy to dev environment
         run: npm run deploy:dev
