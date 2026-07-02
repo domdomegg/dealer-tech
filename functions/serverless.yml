@@ -1,5 +1,5 @@
 service: frictionless
-frameworkVersion: '2'
+frameworkVersion: '3'
 
 custom:
   env-stage: ${file(env.yml):${self:provider.stage}}
@@ -7,9 +7,8 @@ custom:
 
 provider:
   name: aws
-  runtime: nodejs14.x
+  runtime: nodejs24.x
   stage: ${opt:stage, 'dev'}
-  lambdaHashingVersion: 20201221
   memorySize: 128
   region: ${self:custom.env-default.REGION, self:custom.env-stage.REGION, 'eu-west-1'}
   httpApi:
@@ -21,7 +20,6 @@ provider:
     PLAID_SECRET: ${self:custom.env-default.PLAID_SECRET, self:custom.env-stage.PLAID_SECRET}
 
 package:
-  excludeDevDependencies: false
   patterns:
     - '!**'
     - 'node_modules/**'
