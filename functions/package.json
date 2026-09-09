@@ -12,6 +12,6 @@
   },
   "devDependencies": {
     "osls": "^4.0.0",
-    "vitest": "^4.1.8"
+    "vitest": "^4.1.11"
   }
 }
